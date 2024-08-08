@@ -23,6 +23,7 @@ Issues = "https://github.com/adrianusler/massaction/issues"
 
 [build-system]
 requires = ["setuptools", "numpy", "scipy", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
 version = {"attr" = "massaction.__version__"}
