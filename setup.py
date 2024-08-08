@@ -7,7 +7,6 @@ with open("README.md", "r", encoding="utf8") as fh:
 setuptools.setup(
     name="massaction",
     version=__version__,
-    packages=setuptools.find_packages(),
     python_requires="~=3.8",
     classifiers=[
         "Programming Language :: Python :: 3",
