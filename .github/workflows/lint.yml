@@ -1,0 +1,26 @@
+name: Pylint
+
+on: [push]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.12"]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        pip install uv
+        uv pip install ruff --upgrade --system
+        uv pip install -e . --system
+    - name: ruff
+      run: |
+        ruff --version
+        ruff format .
+        ruff check --fix .
