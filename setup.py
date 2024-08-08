@@ -1,12 +1,12 @@
 from massaction import __version__
 import setuptools
 
-with open("README.md", "r", encoding='utf8') as fh:
+with open("README.md", "r", encoding="utf8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="massaction",
-    version=__version__,    
+    version=__version__,
     description="A python package for the numerical solution of mass-action laws with constraints for the description of chemical reactions",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -5,6 +5,8 @@ from __future__ import annotations
 import numpy as np
 from scipy.optimize import root
 
+from typing import Union
+
 
 class ChemModel:
     """Class for modeling chemical species. Manages species and reactions."""
@@ -90,7 +92,7 @@ class Species:
             return LinCombSpecies([FactorSpecies(self, 1.0), other])
         return LinCombSpecies([FactorSpecies(self, 1.0), *other.factor_species_list])
 
-    def __sub__(self, other: Species | FactorSpecies) -> LinCombSpecies:
+    def __sub__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two Species objects."""
         if isinstance(other, Species):
             return LinCombSpecies(
@@ -136,17 +138,17 @@ class FactorSpecies:
         """Return FactorSpecies object representing the product of a FactorSpecies and a numerical factor."""
         return FactorSpecies(self.species, self.factor * factor)
 
-    def __add__(self, other: Species | FactorSpecies) -> LinCombSpecies:
+    def __add__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two FactorSpecies objects."""
         if isinstance(other, Species):
             return LinCombSpecies([self, FactorSpecies(other, 1.0)])
         return LinCombSpecies([self, other])
 
-    def __radd__(self, other: Species | FactorSpecies) -> LinCombSpecies:
+    def __radd__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of a Species object and a FactorSpecies object."""
         return self.__add__(other)
 
-    def __sub__(self, other: Species | FactorSpecies) -> LinCombSpecies:
+    def __sub__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two FactorSpecies objects."""
         if isinstance(other, Species):
             return LinCombSpecies([self, FactorSpecies(other, -1.0)])
@@ -200,7 +202,7 @@ class LinCombSpecies:
             ]
         )
 
-    def __rsub__(self, other: FactorSpecies | Species) -> LinCombSpecies:
+    def __rsub__(self, other: Union[FactorSpecies, Species]) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of a Species object and a LinCombSpecies object."""
         if isinstance(other, Species):
             return LinCombSpecies(
@@ -323,4 +325,4 @@ class Reaction:
 
 
 # Type aliases
-ChemicalSet = Species | FactorSpecies | LinCombSpecies
+ChemicalSet = Union[Species, FactorSpecies, LinCombSpecies]
