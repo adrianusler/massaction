@@ -1,4 +1,4 @@
-from lib.defchem import (
+from massaction.model import (
     ChemModel,
     Species,
     FactorSpecies,
