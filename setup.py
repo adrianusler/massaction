@@ -7,13 +7,6 @@ with open("README.md", "r", encoding="utf8") as fh:
 setuptools.setup(
     name="massaction",
     version=__version__,
-    description="A python package for the numerical solution of mass-action laws with constraints for the description of chemical reactions",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/adrianusler/massaction",
-    author="Adrian L. Usler",
-    author_email="adrian.usler@rwth-aachen.de",
-    license="MIT License",
     packages=setuptools.find_packages(),
     install_requires=[
         "numpy",
