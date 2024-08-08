@@ -8,10 +8,6 @@ setuptools.setup(
     name="massaction",
     version=__version__,
     packages=setuptools.find_packages(),
-    install_requires=[
-        "numpy",
-        "scipy",
-    ],
     python_requires="~=3.8",
     classifiers=[
         "Programming Language :: Python :: 3",
