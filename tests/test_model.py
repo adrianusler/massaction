@@ -1,11 +1,8 @@
-from massaction.model import (
-    ChemModel,
-    Species,
-    FactorSpecies,
-    LinCombSpecies,
-    Constraint,
-    Reaction,
-)
+from massaction.model import ChemModel
+from massaction.species import Species, FactorSpecies, LinCombSpecies
+from massaction.constraint import Constraint
+from massaction.reaction import Reaction
+
 from unittest import TestCase
 import numpy as np
 
