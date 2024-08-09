@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+
 import numpy as np
 from scipy.optimize import root
 
-from massaction.constraint import Constraint
+from massaction.constraint import Constraint, ConstraintSweep, ConstraintLike
 from massaction.reaction import Reaction
 from massaction.species import Species
 
@@ -17,8 +18,6 @@ class ChemModel:
         """Instantiate ChemModel object."""
         self.num_species = num_species
         self.list_of_species = [Species(i, self) for i in range(num_species)]
-        self.list_of_reactions = []
-        self.list_of_constraints = []
 
     def get_all_species(self) -> list:
         """Return list of all species."""
@@ -55,7 +54,30 @@ class ChemModel:
                 ln_equation[num_reactions + i] = constraints[i].eval(ln_concentrations)
             return ln_equation
 
-        first_guess = np.zeros(num_species)
-        result = root(eval_system_of_equations, x0=first_guess)
+        num_sweep = get_num_sweep(constraints)
+        if num_sweep == -1:
+            first_guess = np.zeros(num_species)
+            result = root(eval_system_of_equations, x0=first_guess)
+            return result.x
 
-        return result.x
+        results_list = []
+        for i in range(num_sweep):
+            [cstr.set_current_id(i) for cstr in constraints]
+            first_guess = np.zeros(num_species)
+            result = root(eval_system_of_equations, x0=first_guess)
+            results_list += [result.x]
+
+
+def get_num_sweep(constraints: list[ConstraintLike]) -> int:
+    num_sweep = -1
+    for cstr in constraints:
+        if not isinstance(cstr, ConstraintSweep):
+            continue
+        if num_sweep == cstr.num_values:
+            continue
+        if num_sweep == -1:
+            num_sweep = cstr.num_values
+            continue
+        msg = "All constraint sweeps must have equal number of values"
+        raise ValueError(msg)
+    return num_sweep

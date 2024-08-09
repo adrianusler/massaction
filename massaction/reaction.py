@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from massaction.model import ChemicalSet
+    from massaction.model import SpeciesLike
 
 import numpy as np
 
@@ -17,7 +17,7 @@ class Reaction:
     :param products: LinCombSpecies object representing the products.
     """
 
-    def __init__(self, reactants: ChemicalSet, products: ChemicalSet) -> None:
+    def __init__(self, reactants: SpeciesLike, products: SpeciesLike) -> None:
         """Instantiate Reaction object."""
         from massaction.species import ensure_lincomb
 

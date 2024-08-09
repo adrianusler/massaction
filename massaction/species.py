@@ -38,11 +38,11 @@ class Species:
         """Return FactorSpecies object representing the product of a species and a numerical factor."""
         return FactorSpecies(self, float(factor))
 
-    def __add__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __add__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two Species objects."""
         return ensure_lincomb(self) + ensure_lincomb(other)
 
-    def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __sub__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two Species objects."""
         return ensure_lincomb(self) - ensure_lincomb(other)
 
@@ -50,7 +50,7 @@ class Species:
         """Return Constraint object representing the equality of a Species object and a LinCombSpecies object."""
         return Constraint(self, value)
 
-    def __rshift__(self, other: ChemicalSet) -> Reaction:
+    def __rshift__(self, other: SpeciesLike) -> Reaction:
         """Return Reaction object representing a chemical reaction."""
         return Reaction(self, other)
 
@@ -84,11 +84,11 @@ class FactorSpecies:
         """Return FactorSpecies object representing the product of a FactorSpecies and a numerical factor."""
         return FactorSpecies(self.species, self.factor * factor)
 
-    def __add__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __add__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two FactorSpecies objects."""
         return ensure_lincomb(self) + ensure_lincomb(other)
 
-    def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __sub__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two FactorSpecies objects."""
         return ensure_lincomb(self) - ensure_lincomb(other)
 
@@ -96,7 +96,7 @@ class FactorSpecies:
         """Return Constraint object representing the equality of a FactorSpecies object and a numerical value."""
         return Constraint(self, value)
 
-    def __rshift__(self, other: ChemicalSet) -> Reaction:
+    def __rshift__(self, other: SpeciesLike) -> Reaction:
         """Return Reaction object representing a chemical reaction."""
         return Reaction(self, other)
 
@@ -116,12 +116,12 @@ class LinCombSpecies:
         _factor_species_list = [-fs for fs in self.factor_species_list]
         return LinCombSpecies(_factor_species_list)
 
-    def __add__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __add__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two LinCombSpecies objects."""
         other = ensure_lincomb(other)
         return LinCombSpecies([*self.factor_species_list, *other.factor_species_list])
 
-    def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
+    def __sub__(self, other: SpeciesLike) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two LinCombSpecies objects."""
         return self + (-ensure_lincomb(other))
 
@@ -129,7 +129,7 @@ class LinCombSpecies:
         """Return Constraint object representing the equality of a LinCombSpecies object and a numerical value."""
         return Constraint(self, value)
 
-    def __rshift__(self, other: ChemicalSet) -> Reaction:
+    def __rshift__(self, other: SpeciesLike) -> Reaction:
         """Return Reaction object representing a chemical reaction."""
         return Reaction(self, other)
 
@@ -146,7 +146,7 @@ class LinCombSpecies:
         return ""
 
 
-def ensure_lincomb(obj: ChemicalSet) -> LinCombSpecies:
+def ensure_lincomb(obj: SpeciesLike) -> LinCombSpecies:
     """Auxiliary function to ensure that a LinCombSpecies object is being used."""
     if isinstance(obj, Species):
         return LinCombSpecies([FactorSpecies(obj, 1.0)])
@@ -156,4 +156,4 @@ def ensure_lincomb(obj: ChemicalSet) -> LinCombSpecies:
 
 
 # Type aliases
-ChemicalSet = Union[Species, FactorSpecies, LinCombSpecies]
+SpeciesLike = Union[Species, FactorSpecies, LinCombSpecies]

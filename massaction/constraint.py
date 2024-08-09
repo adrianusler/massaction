@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
-    from massaction.model import ChemicalSet
+    from massaction.model import SpeciesLike
 
 import numpy as np
 
@@ -13,7 +13,7 @@ import numpy as np
 class Constraint:
     """Class for modeling constraints on chemical species."""
 
-    def __init__(self, lincomb: ChemicalSet, value: float) -> None:
+    def __init__(self, lincomb: SpeciesLike, value: float) -> None:
         """Instantiate Constraint object.
 
         :param lincomb: LinCombSpecies object.
@@ -52,3 +52,28 @@ class Constraint:
         """Print the specifics of the Constraint object."""
         mystr = self.lincomb.print(return_str=True)
         print(f"{mystr} == {self.value}")  # noqa: T201
+
+    @property
+    def num_values(self) -> int:
+        return 1
+
+    def set_current_id(self, current_id: int) -> None:
+        pass
+
+
+class ConstraintSweep(Constraint):
+    def __init__(self, lincomb: SpeciesLike, values: list | np.ndarray):
+        self.values = values
+        self.current_id = 0
+        super().__init__(lincomb, self.values[self.current_id])
+
+    @property
+    def num_values(self) -> int:
+        return len(self.values)
+
+    def set_current_id(self, current_id: int) -> None:
+        self.current_id = current_id
+        self.value = self.values[self.current_id]
+
+
+ConstraintLike = Union[Constraint, ConstraintSweep]
