@@ -26,12 +26,14 @@ Issues = "https://github.com/adrianusler/massaction/issues"
 requires = ["numpy", "scipy", "setuptools>=65", "wheel", "twine"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-package-dir = {"" = "massaction"}
+# [tool.setuptools]
+# package-dir = {"" = "massaction"}
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["massaction*"]
+exclude = ["tests*"]
+namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
 [tool.setuptools.dynamic]
 version = {"attr" = "massaction.__version__"}
-
-[tool.setuptools.packages.find]
-where = ["massaction"]  # list of folders that contain the packages (["."] by default)
-namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
