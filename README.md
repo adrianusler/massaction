@@ -1,4 +1,5 @@
-[![CI Status](https://github.com/Molara-Lab/Molara/actions/workflows/test.yml/badge.svg)](https://github.com/adrianusler/massaction/actions/workflows/test.yml)
+[![PyPI version](https://badge.fury.io/py/massaction.svg)](https://badge.fury.io/py/massaction)
+[![CI Status](https://github.com/adrianusler/massaction/actions/workflows/test.yml/badge.svg)](https://github.com/adrianusler/massaction/actions/workflows/test.yml)
 [![code coverage](https://img.shields.io/codecov/c/gh/adrianusler/massaction)](https://codecov.io/gh/adrianusler/massaction)
 
 # massaction
