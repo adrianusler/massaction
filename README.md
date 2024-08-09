@@ -8,7 +8,7 @@ A python package for the numerical solution of mass-action laws with constraints
 ## Installation
 The easiest way to install **massaction** is from [PyPi](https://pypi.org/project/massaction/) using pip.
 ```bash
-pip install impedance
+pip install massaction
 ```
 
 ## Usage
