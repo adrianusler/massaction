@@ -26,9 +26,6 @@ Issues = "https://github.com/adrianusler/massaction/issues"
 requires = ["numpy", "scipy", "setuptools>=65", "wheel", "twine"]
 build-backend = "setuptools.build_meta"
 
-# [tool.setuptools]
-# package-dir = {"" = "massaction"}
-
 [tool.setuptools.packages.find]
 where = ["."]  # list of folders that contain the packages (["."] by default)
 include = ["massaction*"]
