@@ -1,6 +1,6 @@
 [project]
 name = "massaction"
-version = "0.0.1"
+version = {"attr" = "massaction.__version__"}
 authors = [
   { name="Adrian L. Usler", email="adrian.usler@rwth-aachen.de" },
 ]
