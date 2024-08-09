@@ -66,6 +66,7 @@ class ChemModel:
             first_guess = np.zeros(num_species)
             result = root(eval_system_of_equations, x0=first_guess)
             results_list += [result.x]
+        return results_list
 
 
 def get_num_sweep(constraints: list[ConstraintLike]) -> int:
