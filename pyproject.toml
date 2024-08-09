@@ -22,7 +22,7 @@ Homepage = "https://github.com/adrianusler/massaction"
 Issues = "https://github.com/adrianusler/massaction/issues"
 
 [build-system]
-requires = ["setuptools", "numpy", "scipy", "wheel"]
+requires = ["numpy", "scipy", "setuptools>=65", "wheel", "twine"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
