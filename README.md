@@ -12,7 +12,7 @@ pip install impedance
 ```
 
 ## Usage
-The major perk of massaction is the simple syntax in which one can set up the description of a thermodynamic equilibrium. For instance, the mass-action law for the oxyhydrogen reaction may be set up in a couple of code lines:
+The major perk of **massaction** is the simple syntax in which one can set up the description of a thermodynamic equilibrium. For instance, the mass-action law for the oxyhydrogen reaction may be set up in a couple of code lines:
 ```python
 from massaction.model import ChemModel
 
