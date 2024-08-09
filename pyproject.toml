@@ -1,6 +1,5 @@
 [project]
 name = "massaction"
-version = {"attr" = "massaction.__version__"}
 authors = [
   { name="Adrian L. Usler", email="adrian.usler@rwth-aachen.de" },
 ]
@@ -17,6 +16,8 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 license = {file = "LICENSE"}
+dynamic = ["version"]
+
 [project.urls]
 Homepage = "https://github.com/adrianusler/massaction"
 Issues = "https://github.com/adrianusler/massaction/issues"
