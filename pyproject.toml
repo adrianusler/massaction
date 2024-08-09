@@ -18,6 +18,12 @@ classifiers = [
 license = {file = "LICENSE"}
 dynamic = ["version"]
 
+[project.optional-dependencies]
+tests = [
+    "pytest>=7",
+    "pytest-cov>=5",
+]
+
 [project.urls]
 Homepage = "https://github.com/adrianusler/massaction"
 Issues = "https://github.com/adrianusler/massaction/issues"
