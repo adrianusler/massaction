@@ -86,19 +86,11 @@ class Species:
 
     def __add__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two Species objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies([FactorSpecies(self, 1.0), FactorSpecies(other, 1.0)])
-        if isinstance(other, FactorSpecies):
-            return LinCombSpecies([FactorSpecies(self, 1.0), other])
-        return LinCombSpecies([FactorSpecies(self, 1.0), *other.factor_species_list])
+        return ensure_lincomb(self) + ensure_lincomb(other)
 
-    def __sub__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
+    def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two Species objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies(
-                [FactorSpecies(self, 1.0), FactorSpecies(other, -1.0)]
-            )
-        return LinCombSpecies([FactorSpecies(self, 1.0), -1.0 * other])
+        return ensure_lincomb(self) - ensure_lincomb(other)
 
     def __eq__(self, value: float) -> Constraint:
         """Return Constraint object representing the equality of a Species object and a LinCombSpecies object."""
@@ -138,21 +130,13 @@ class FactorSpecies:
         """Return FactorSpecies object representing the product of a FactorSpecies and a numerical factor."""
         return FactorSpecies(self.species, self.factor * factor)
 
-    def __add__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
+    def __add__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two FactorSpecies objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies([self, FactorSpecies(other, 1.0)])
-        return LinCombSpecies([self, other])
+        return ensure_lincomb(self) + ensure_lincomb(other)
 
-    def __radd__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
-        """Return LinCombSpecies object representing the sum of a Species object and a FactorSpecies object."""
-        return self.__add__(other)
-
-    def __sub__(self, other: Union[Species, FactorSpecies]) -> LinCombSpecies:
+    def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two FactorSpecies objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies([self, FactorSpecies(other, -1.0)])
-        return LinCombSpecies([self, -1.0 * other])
+        return ensure_lincomb(self) - ensure_lincomb(other)
 
     def __eq__(self, value: float) -> Constraint:
         """Return Constraint object representing the equality of a FactorSpecies object and a numerical value."""
@@ -173,54 +157,19 @@ class LinCombSpecies:
         """
         self.factor_species_list = factor_species_list
 
+    def __neg__(self) -> LinCombSpecies:
+        """Return LinCombSpecies object representing the negation of a FactorSpecies object."""
+        _factor_species_list = [-fs for fs in self.factor_species_list]
+        return LinCombSpecies(_factor_species_list)
+
     def __add__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the sum of two LinCombSpecies objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies(
-                [*self.factor_species_list, FactorSpecies(other, 1.0)]
-            )
-        if isinstance(other, FactorSpecies):
-            return LinCombSpecies([*self.factor_species_list, other])
+        other = ensure_lincomb(other)
         return LinCombSpecies([*self.factor_species_list, *other.factor_species_list])
-
-    def __radd__(self, other: ChemicalSet) -> LinCombSpecies:
-        """Return LinCombSpecies object representing the sum of a Species object and a LinCombSpecies object."""
-        return self.__add__(other)
 
     def __sub__(self, other: ChemicalSet) -> LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two LinCombSpecies objects."""
-        if isinstance(other, Species):
-            return LinCombSpecies(
-                [*self.factor_species_list, FactorSpecies(other, -1.0)]
-            )
-        if isinstance(other, FactorSpecies):
-            return LinCombSpecies([*self.factor_species_list, -1.0 * other])
-        return LinCombSpecies(
-            [
-                *self.factor_species_list,
-                *[-1.0 * fs for fs in other.factor_species_list],
-            ]
-        )
-
-    def __rsub__(self, other: Union[FactorSpecies, Species]) -> LinCombSpecies:
-        """Return LinCombSpecies object representing the difference of a Species object and a LinCombSpecies object."""
-        if isinstance(other, Species):
-            return LinCombSpecies(
-                [
-                    *[-1.0 * fs for fs in self.factor_species_list],
-                    FactorSpecies(other, 1.0),
-                ]
-            )
-        if isinstance(other, FactorSpecies):
-            return LinCombSpecies(
-                [*[-1.0 * fs for fs in self.factor_species_list], other]
-            )
-        return LinCombSpecies(
-            [
-                *[-1.0 * fs for fs in other.factor_species_list],
-                *other.factor_species_list,
-            ]
-        )
+        return self + (-ensure_lincomb(other))
 
     def __eq__(self, value: float) -> Constraint:
         """Return Constraint object representing the equality of a LinCombSpecies object and a numerical value."""
