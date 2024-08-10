@@ -49,7 +49,7 @@ class Species:
 
     def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a Species object and a LinCombSpecies object."""
-        if isinstance(value, Union[list, ndarray]):
+        if isinstance(value, list) or isinstance(value, ndarray):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
@@ -97,7 +97,7 @@ class FactorSpecies:
 
     def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a FactorSpecies object and a numerical value."""
-        if isinstance(value, Union[list, ndarray]):
+        if isinstance(value, list) or isinstance(value, ndarray):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
@@ -132,7 +132,7 @@ class LinCombSpecies:
 
     def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a LinCombSpecies object and a numerical value."""
-        if isinstance(value, Union[list, ndarray]):
+        if isinstance(value, list) or isinstance(value, ndarray):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
