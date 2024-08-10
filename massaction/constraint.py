@@ -55,13 +55,20 @@ class Constraint:
 
     @property
     def num_values(self) -> int:
+        """Return the number of values in the parameter sweep (regular constraint: 1)."""
         return 1
 
     def set_current_id(self, current_id: int) -> None:
+        """Set new id of value in list of parameter sweep values (irrelevant in regular constraint).
+
+        :param current_id: the new id
+        """
         pass
 
 
 class ConstraintSweep(Constraint):
+    """Class to represent a parameter sweep in a constraint."""
+
     def __init__(self, lincomb: SpeciesLike, values: list | np.ndarray):
         self.values = values
         self.current_id = 0
@@ -69,9 +76,14 @@ class ConstraintSweep(Constraint):
 
     @property
     def num_values(self) -> int:
+        """Return the number of values in the parameter sweep."""
         return len(self.values)
 
     def set_current_id(self, current_id: int) -> None:
+        """Set new id of value in list of parameter sweep values.
+
+        :param current_id: the new id
+        """
         self.current_id = current_id
         self.value = self.values[self.current_id]
 

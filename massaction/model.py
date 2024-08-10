@@ -70,6 +70,7 @@ class ChemModel:
 
 
 def get_num_sweep(constraints: list[ConstraintLike]) -> int:
+    """Return the number of values in the parameter sweep. If inconsistent, raise error."""
     num_sweep = -1
     for cstr in constraints:
         if not isinstance(cstr, ConstraintSweep):
