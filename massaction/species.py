@@ -28,7 +28,7 @@ class Species:
 
     def __neg__(self) -> FactorSpecies:
         """Return FactorSpecies object representing the negation of a Species object."""
-        return FactorSpecies(self.species, -1.0)
+        return FactorSpecies(self, -1.0)
 
     def __mul__(self, factor: float) -> FactorSpecies:
         """Return FactorSpecies object representing the product of a species and a numerical factor."""
