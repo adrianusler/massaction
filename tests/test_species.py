@@ -15,7 +15,7 @@ class TestSpecies(TestCase):
         def fs_assertions(fs, factor, species_obj):
             assert isinstance(fs, FactorSpecies)
             assert fs.factor == factor
-            assert fs.species == species_obj
+            assert fs.species is species_obj
 
         h2o, h2, o2 = self.h2o, self.h2, self.o2
         # test Species.__mul__
@@ -38,7 +38,7 @@ class TestSpecies(TestCase):
             lc_species = [fs.species for fs in lc.factor_species_list]
             assert lc_factors == factors_list
             for species1, species2 in zip(lc_species, species_list):
-                assert species1.species_id == species2.species_id
+                assert species1 is species2
 
         h2o, h2, o2 = self.h2o, self.h2, self.o2
 
