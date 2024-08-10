@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from massaction.model import ChemModel
+from numpy import ndarray
 
 from massaction.constraint import Constraint, ConstraintSweep, ConstraintLike
 from massaction.reaction import Reaction
@@ -46,9 +47,9 @@ class Species:
         """Return LinCombSpecies object representing the difference of two Species objects."""
         return ensure_lincomb(self) - ensure_lincomb(other)
 
-    def __eq__(self, value: Union[float, list[float]]) -> ConstraintLike:
+    def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a Species object and a LinCombSpecies object."""
-        if isinstance(value, list):
+        if isinstance(value, Union[list, ndarray]):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
@@ -94,9 +95,9 @@ class FactorSpecies:
         """Return LinCombSpecies object representing the difference of two FactorSpecies objects."""
         return ensure_lincomb(self) - ensure_lincomb(other)
 
-    def __eq__(self, value: Union[float, list[float]]) -> ConstraintLike:
+    def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a FactorSpecies object and a numerical value."""
-        if isinstance(value, list):
+        if isinstance(value, Union[list, ndarray]):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
@@ -129,9 +130,9 @@ class LinCombSpecies:
         """Return LinCombSpecies object representing the difference of two LinCombSpecies objects."""
         return self + (-ensure_lincomb(other))
 
-    def __eq__(self, value: Union[float, list[float]]) -> ConstraintLike:
+    def __eq__(self, value: Union[float, list[float], ndarray]) -> ConstraintLike:
         """Return Constraint object representing the equality of a LinCombSpecies object and a numerical value."""
-        if isinstance(value, list):
+        if isinstance(value, Union[list, ndarray]):
             return ConstraintSweep(self, value)
         return Constraint(self, value)
 
