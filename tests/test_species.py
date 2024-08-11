@@ -18,14 +18,18 @@ class TestSpecies(TestCase):
             assert fs.species is species_obj
 
         h2o, h2, o2 = self.h2o, self.h2, self.o2
-        # test Species.__mul__
+        # test Species.__rmul__
         fs_assertions(2.0 * h2o, 2.0, h2o)
+        # test Species.__mul__
+        fs_assertions(h2o * 2.0, 2.0, h2o)
         # test Species.__neg__
         fs_assertions(-o2, -1.0, o2)
         # test FactorSpecies.__neg__
         fs_assertions(-(6.0 * h2), -6.0, h2)
-        # test FactorSpecies.__mul__
+        # test FactorSpecies.__rmul__
         fs_assertions(4.0 * (-3 * h2o), -12.0, h2o)
+        # test FactorSpecies.__mul__
+        fs_assertions((-3 * h2o) * 4.0, -12.0, h2o)
 
     def test_lincomb(self):
         def lc_assertions(lc, factors_list, species_list):
