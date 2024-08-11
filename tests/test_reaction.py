@@ -36,11 +36,11 @@ class TestReaction(TestCase):
 
         h2o, h2, o2 = self.h2o, self.h2, self.o2
         # test Species.__rshift__
-        reaction = 0.4 * h2 >> 1.9 * o2
-        reaction_assertions(reaction, [h2], [0.4], [o2], [1.9])
+        reaction = h2 >> 1.9 * o2
+        reaction_assertions(reaction, [h2], [1.0], [o2], [1.9])
         # test FactorSpecies.__rshift__
-        reaction = 2.0 * h2 >> o2
-        reaction_assertions(reaction, [h2], [2.0], [o2], [1.0])
+        reaction = 0.4 * h2 >> o2
+        reaction_assertions(reaction, [h2], [0.4], [o2], [1.0])
         # test LinCombSpecies.__rshift__
         reaction = (h2 + o2) >> 2 * h2o
         reaction_assertions(reaction, [h2, o2], [1.0, 1.0], [h2o], [2.0])
