@@ -5,6 +5,8 @@ from massaction.species import ensure_lincomb
 from unittest import TestCase
 import numpy as np
 
+import pytest
+
 
 class TestConstraint(TestCase):
     """Test the Constraint class."""
@@ -13,34 +15,63 @@ class TestConstraint(TestCase):
         self.model3 = ChemModel(3)
 
     def test_constraint(self):
+        def cstr_assertions(cstr, lincomb, value):
+            lnc = np.array([4.7, -6.2, 7.3])
+            c = np.exp(lnc)
+            cstr_eval_pos = 0.0
+            cstr_eval_neg = 0.0
+            assert isinstance(cstr, Constraint)
+            for fs1, fs2 in zip(
+                cstr.lincomb.factor_species_list, lincomb.factor_species_list
+            ):
+                assert fs1.factor == fs2.factor
+                assert fs1.species is fs2.species
+                if fs1.factor > 0:
+                    cstr_eval_pos += fs1.factor * c[fs1.species.species_id]
+                else:
+                    cstr_eval_neg -= fs1.factor * c[fs1.species.species_id]
+            if value > 0:
+                cstr_eval_neg += value
+            else:
+                cstr_eval_pos -= value
+            assert np.isclose(
+                cstr.eval(lnc),
+                np.log(cstr_eval_pos) - np.log(cstr_eval_neg),
+            )
+            assert cstr.value == value
+            assert cstr.num_values == 1  # by definition, since it is not a sweep
+
         h2o, h2, o2 = self.model3.get_all_species()
 
-        lincomb = 3.4 * h2o - 0.2 * h2 - o2
-        constraint = lincomb == -1.3
-        assert isinstance(constraint, Constraint)
-        # assert constraint.lincomb == lincomb
-        assert constraint.value == -1.3
-        lnconc = np.array([23.0, -1.0, 4.3])
-        conc = np.exp(lnconc)
-        constraint_eval_pos = 3.4 * conc[0] + 1.3
-        constraint_eval_neg = 0.2 * conc[1] + conc[2]
-        assert np.isclose(
-            constraint.eval(lnconc),
-            np.log(constraint_eval_pos) - np.log(constraint_eval_neg),
+        # test LinCombSpecies.__eq__
+        cstr_assertions(
+            (3.4 * h2o - 0.2 * h2 - o2) == -1.3,
+            ensure_lincomb(3.4 * h2o - 0.2 * h2 - o2),
+            -1.3,
         )
+        # test FactorSpecies.__eq__
+        cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
+        # test Species.__eq__
+        cstr_assertions(h2 == 4.5, ensure_lincomb(h2), 4.5)
 
-        constraint = lincomb == 10.7
-        assert isinstance(constraint, Constraint)
-        assert constraint.lincomb is lincomb
-        assert constraint.value == 10.7
-        lnconc = np.array([3.14, 3.0, 2.9])
-        conc = np.exp(lnconc)
-        constraint_eval_pos = 3.4 * conc[0]
-        constraint_eval_neg = 0.2 * conc[1] + conc[2] + 10.7
-        assert np.isclose(
-            constraint.eval(lnconc),
-            np.log(constraint_eval_pos) - np.log(constraint_eval_neg),
-        )
+    @pytest.fixture(autouse=True)
+    def capsys(self, capsys):
+        self.capsys = capsys
+
+    def test_print(self):
+        h2o, h2, o2 = self.model3.get_all_species()
+        # test Species.__eq__
+        (h2 == 4.5).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+1.0*species_1  == 4.5\n"
+        # test FactorSpecies.__eq__
+        (2 * h2o == 10.7).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+2.0*species_0  == 10.7\n"
+        # test LinCombSpecies.__eq__
+        (h2 - h2o == -1.3).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+1.0*species_1 -1.0*species_0  == -1.3\n"
 
 
 class TestConstraintSweep(TestCase):
