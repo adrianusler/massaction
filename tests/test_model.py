@@ -4,6 +4,7 @@ from massaction.species import Species
 from unittest import TestCase
 
 import pytest
+import numpy as np
 
 
 class TestChemModel(TestCase):
@@ -38,3 +39,21 @@ class TestChemModel(TestCase):
         c2 = h2 == [10.0, 11.0, 12.0]
         with pytest.raises(ValueError):
             get_num_sweep([c1, c2, c3])
+
+    def test_solve(self):
+        h2o, h2, o2 = self.model3.get_all_species()
+        reaction = h2 + o2 >> 2 * h2o
+        ln_eqconst = 3.0
+        constraint1 = h2o + h2 == 1.0
+        constraint2 = h2o + 2 * o2 == 7.0
+        with pytest.raises(ValueError):
+            self.model3.solve([reaction], [ln_eqconst], [constraint1])
+        with pytest.raises(ValueError):
+            self.model3.solve(
+                [reaction], [ln_eqconst, ln_eqconst], [constraint1, constraint2]
+            )
+        lnc = self.model3.solve([reaction], [ln_eqconst], [constraint1, constraint2])
+        assert np.isclose(2 * lnc[0] - lnc[1] - lnc[2], ln_eqconst)
+        c = np.exp(lnc)
+        assert np.isclose(c[0] + c[1], 1.0)
+        assert np.isclose(c[0] + 2 * c[2], 7.0)
