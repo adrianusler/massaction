@@ -5,6 +5,7 @@ from unittest import TestCase
 
 import pytest
 
+
 class TestSpecies(TestCase):
     """Test the SpeciesLike classes Species, FactorSpecies, and LinCombSpecies."""
 
@@ -69,18 +70,18 @@ class TestSpecies(TestCase):
 
     def test_print(self):
         h2o, h2, o2 = self.h2o, self.h2, self.o2
-        (h2+h2o+o2).print()
+        (h2 + h2o + o2).print()
         captured_text = self.capsys.readouterr().out
         assert captured_text == "+1.0*species_1 +1.0*species_0 +1.0*species_2 \n"
 
-        (-3.0*h2 + o2).print()
+        (-3.0 * h2 + o2).print()
         captured_text = self.capsys.readouterr().out
         assert captured_text == "-3.0*species_1 +1.0*species_2 \n"
 
-        (4.0*h2o - 11.0*o2).print()
+        (4.0 * h2o - 11.0 * o2).print()
         captured_text = self.capsys.readouterr().out
         assert captured_text == "+4.0*species_0 -11.0*species_2 \n"
 
-        (-0.1*h2o - 4.0*o2 + 3.0*h2).print()
+        (-0.1 * h2o - 4.0 * o2 + 3.0 * h2).print()
         captured_text = self.capsys.readouterr().out
         assert captured_text == "-0.1*species_0 -4.0*species_2 +3.0*species_1 \n"
