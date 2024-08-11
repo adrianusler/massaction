@@ -5,6 +5,8 @@ from massaction.species import ensure_lincomb
 from unittest import TestCase
 import numpy as np
 
+import pytest
+
 
 class TestConstraint(TestCase):
     """Test the Constraint class."""
@@ -37,6 +39,7 @@ class TestConstraint(TestCase):
                 np.log(cstr_eval_pos) - np.log(cstr_eval_neg),
             )
             assert cstr.value == value
+            assert cstr.num_values == 1  # by definition, since it is not a sweep
 
         h2o, h2, o2 = self.model3.get_all_species()
 
@@ -50,6 +53,25 @@ class TestConstraint(TestCase):
         cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
         # test Species.__eq__
         cstr_assertions(h2 == 4.5, ensure_lincomb(h2), 4.5)
+
+    @pytest.fixture(autouse=True)
+    def capsys(self, capsys):
+        self.capsys = capsys
+
+    def test_print(self):
+        h2o, h2, o2 = self.model3.get_all_species()
+        # test Species.__eq__
+        (h2 == 4.5).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+1.0*species_1  == 4.5\n"
+        # test FactorSpecies.__eq__
+        (2 * h2o == 10.7).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+2.0*species_0  == 10.7\n"
+        # test LinCombSpecies.__eq__
+        (h2 - h2o == -1.3).print()
+        out, _ = self.capsys.readouterr()
+        assert out == "+1.0*species_1 -1.0*species_0  == -1.3\n"
 
 
 class TestConstraintSweep(TestCase):
