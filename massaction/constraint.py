@@ -53,13 +53,23 @@ class Constraint:
         mystr = self.lincomb.print(return_str=True)
         print(f"{mystr} == {self.value}")  # noqa: T201
 
+    def check_reservoir(self) -> tuple[bool, float]:
+        """Check whether the constraint is a reservoir. If so, also return the constant reservoir concentration."""
+        lincomb = self.lincomb
+        if len(lincomb.factor_species_list) == 1:
+            factor = lincomb.factor_species_list[0].factor
+            if factor == 0.0:
+                raise ValueError("Reservoir constraint factor cannot be zero.")
+            return (True, self.value / factor)
+        return (False, 0.0)
+
     @property
     def num_values(self) -> int:
-        """Return the number of values in the parameter sweep (regular constraint: 1)."""
+        """Return the number of values in the parameter sweep (non-sweep constraint: 1)."""
         return 1
 
     def set_current_id(self, current_id: int) -> None:
-        """Set new id of value in list of parameter sweep values (irrelevant in regular constraint).
+        """Set new id of value in list of parameter sweep values (irrelevant in non-sweep constraint).
 
         :param current_id: the new id
         """

@@ -50,9 +50,13 @@ class TestConstraint(TestCase):
             -1.3,
         )
         # test FactorSpecies.__eq__
+        cstr_reservoir = 2 * h2o == 10.7
         cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
+        assert cstr_reservoir.check_reservoir() == (True, 5.35)
         # test Species.__eq__
-        cstr_assertions(h2 == 4.5, ensure_lincomb(h2), 4.5)
+        cstr_reservoir = h2 == 4.5
+        cstr_assertions(cstr_reservoir, ensure_lincomb(h2), 4.5)
+        assert cstr_reservoir.check_reservoir() == (True, 4.5)
 
     @pytest.fixture(autouse=True)
     def capsys(self, capsys):
