@@ -57,6 +57,12 @@ class TestConstraint(TestCase):
         cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
         assert cstr_reservoir.check_reservoir() == (True, 0)
         assert cstr_reservoir.reservoir_value == 5.35
+        cstr_reservoir = 0.0 * o2 == 0.0
+        assert cstr_reservoir.check_reservoir() == (True, 2)
+        with pytest.raises(
+            ValueError, match="Reservoir constraint factor cannot be zero."
+        ):
+            cstr_reservoir.reservoir_value
         # test Species.__eq__
         cstr_reservoir = h2 == 4.5
         cstr_assertions(cstr_reservoir, ensure_lincomb(h2), 4.5)
