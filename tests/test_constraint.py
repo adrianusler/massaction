@@ -44,11 +44,14 @@ class TestConstraint(TestCase):
         h2o, h2, o2 = self.model3.get_all_species()
 
         # test LinCombSpecies.__eq__
+        cstr = (3.4 * h2o - 0.2 * h2 - o2) == -1.3
         cstr_assertions(
-            (3.4 * h2o - 0.2 * h2 - o2) == -1.3,
+            cstr,
             ensure_lincomb(3.4 * h2o - 0.2 * h2 - o2),
             -1.3,
         )
+        assert cstr.check_reservoir() == (False, -1)
+        assert cstr.reservoir_value == 0.0
         # test FactorSpecies.__eq__
         cstr_reservoir = 2 * h2o == 10.7
         cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
