@@ -44,15 +44,30 @@ class TestConstraint(TestCase):
         h2o, h2, o2 = self.model3.get_all_species()
 
         # test LinCombSpecies.__eq__
+        cstr = (3.4 * h2o - 0.2 * h2 - o2) == -1.3
         cstr_assertions(
-            (3.4 * h2o - 0.2 * h2 - o2) == -1.3,
+            cstr,
             ensure_lincomb(3.4 * h2o - 0.2 * h2 - o2),
             -1.3,
         )
+        assert cstr.check_reservoir() == (False, -1)
+        assert cstr.reservoir_value == 0.0
         # test FactorSpecies.__eq__
+        cstr_reservoir = 2 * h2o == 10.7
         cstr_assertions(2 * h2o == 10.7, ensure_lincomb(2 * h2o), 10.7)
+        assert cstr_reservoir.check_reservoir() == (True, 0)
+        assert cstr_reservoir.reservoir_value == 5.35
+        cstr_reservoir = 0.0 * o2 == 0.0
+        assert cstr_reservoir.check_reservoir() == (True, 2)
+        with pytest.raises(
+            ValueError, match="Reservoir constraint factor cannot be zero."
+        ):
+            cstr_reservoir.reservoir_value
         # test Species.__eq__
-        cstr_assertions(h2 == 4.5, ensure_lincomb(h2), 4.5)
+        cstr_reservoir = h2 == 4.5
+        cstr_assertions(cstr_reservoir, ensure_lincomb(h2), 4.5)
+        assert cstr_reservoir.check_reservoir() == (True, 1)
+        assert cstr_reservoir.reservoir_value == 4.5
 
     @pytest.fixture(autouse=True)
     def capsys(self, capsys):
