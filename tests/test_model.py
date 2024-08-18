@@ -1,10 +1,15 @@
-from massaction.model import ChemModel, get_num_sweep
-from massaction.species import Species
+from massaction.model import ChemModel, get_num_sweep, nil
+from massaction.species import Species, LinCombSpecies
 
 from unittest import TestCase
 
 import pytest
 import numpy as np
+
+
+def test_nil():
+    assert isinstance(nil, LinCombSpecies)
+    assert nil.factor_species_list == []
 
 
 class TestChemModel(TestCase):
