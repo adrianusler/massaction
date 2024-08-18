@@ -8,7 +8,7 @@ from scipy.optimize import root
 
 from massaction.constraint import Constraint, ConstraintSweep, ConstraintLike
 from massaction.reaction import Reaction
-from massaction.species import Species
+from massaction.species import Species, LinCombSpecies
 
 
 class ChemModel:
@@ -126,3 +126,6 @@ def get_num_sweep(constraints: list[ConstraintLike]) -> int:
         msg = "All constraint sweeps must have equal number of values"
         raise ValueError(msg)
     return num_sweep
+
+
+nil = LinCombSpecies([])
