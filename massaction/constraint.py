@@ -53,15 +53,24 @@ class Constraint:
         mystr = self.lincomb.print(return_str=True)
         print(f"{mystr} == {self.value}")  # noqa: T201
 
-    def check_reservoir(self) -> tuple[bool, float]:
+    def check_reservoir(self) -> tuple[bool, int, float]:
         """Check whether the constraint is a reservoir. If so, also return the constant reservoir concentration."""
         lincomb = self.lincomb
-        if len(lincomb.factor_species_list) == 1:
-            factor = lincomb.factor_species_list[0].factor
-            if factor == 0.0:
-                raise ValueError("Reservoir constraint factor cannot be zero.")
-            return (True, self.value / factor)
-        return (False, 0.0)
+        if len(lincomb.factor_species_list) != 1:
+            return (False, -1)
+        species_id = lincomb.factor_species_list[0].species.species_id
+        return (True, species_id)
+
+    @property
+    def reservoir_value(self) -> float:
+        """Return the reservoir value of the constraint."""
+        lincomb = self.lincomb
+        if len(lincomb.factor_species_list) != 1:
+            return 0.0
+        factor = lincomb.factor_species_list[0].factor
+        if factor == 0.0:
+            raise ValueError("Reservoir constraint factor cannot be zero.")
+        return self.value / factor
 
     @property
     def num_values(self) -> int:
