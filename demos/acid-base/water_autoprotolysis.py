@@ -7,7 +7,6 @@ import math  # standard library for mathematical functions
 # The concentration of water is so high that it is considered constant.
 # The concentration of water is, therefore, incorporated into the equilibrium constant,
 # i.e., the autoprotolysis constant, Kw = [H+][OH-]
-# A-: acid anion, H+: proton
 mymodel = ChemModel(2)
 h, oh = mymodel.get_all_species()
 
@@ -20,14 +19,13 @@ Kw = 1e-14  # [mol^2/L^2], value at 25°C
 lnKw = math.log(Kw)
 
 # DEFINE CONSTRAINTS
-# 2.) Electroneutrality constraint: the total charge is zero;
+#     Electroneutrality constraint: the total charge is zero;
 #     the total charge is the sum of the charges of all species.
 #     OH- and H+ are the only charged species in the system.
 #     So the constraint is: [H+] - [OH-] = 0
 constraint = h - oh == 0
 
 # DEFINE REACTION EQUATIONS
-# 1.) HA <=> H+ + A-
 reaction = nil >> h + oh
 
 # SOLVE THE MODEL FOR EQUILIBRIUM CONCENTRATIONS
