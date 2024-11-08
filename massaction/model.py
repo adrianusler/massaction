@@ -28,12 +28,14 @@ class ChemModel:
         reactions: list[Reaction],
         ln_eqconst: list[float],
         constraints: list[Constraint],
+        initial_step_bound: float = 1.0,
     ) -> np.ndarray:
         """Solve the system of reactions and constraints.
 
         :param reactions: List of Reaction objects.
         :param ln_eqconst: Array of logarithmic equilibrium constants.
         :param constraints: List of Constraint objects.
+        :param initial_step_bound: Initial step bound factor for the solver.
         """
         num_reactions = len(reactions)
         num_constraints = len(constraints)
@@ -105,7 +107,12 @@ class ChemModel:
             [cstr.set_current_id(i) for cstr in constraints]
             update_reservoir_values()
             first_guess = np.zeros(num_species - num_reservoirs)
-            result = root(eval_system_of_equations, x0=first_guess)
+            result = root(
+                eval_system_of_equations,
+                x0=first_guess,
+                method="hybr",
+                options=dict(factor=initial_step_bound),
+            )
             results_list += [ln_concentrations_with_reservoirs(result.x)]
         if num_sweep == -1:
             return results_list[0]
