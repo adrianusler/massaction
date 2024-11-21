@@ -10,6 +10,7 @@ from massaction.constraint import Constraint, ConstraintSweep, ConstraintLike
 from massaction.reaction import Reaction
 from massaction.species import Species, LinCombSpecies
 
+from typing import Union
 
 class ChemModel:
     """Class for modeling chemical species. Manages species and reactions."""
@@ -26,7 +27,7 @@ class ChemModel:
     def solve(
         self,
         reactions: list[Reaction],
-        ln_eqconst: list[float],
+        ln_eqconst: list[Union[float, list[float], np.ndarray]],
         constraints: list[Constraint],
         initial_step_bound: float = 1.0,
     ) -> np.ndarray:
@@ -77,6 +78,18 @@ class ChemModel:
         reservoir_values = [0.0] * num_reservoirs
         update_reservoir_values()
 
+        def update_ln_eqconst_flat(current_id: int):
+            """Update the flat list of equilibrium constants.
+
+            :param current_id: Index of the current value in the sweep."""
+            ln_eqconst_flat[:] = [
+                ln_eqconst_i[current_id] if isinstance(ln_eqconst_i, (list, np.ndarray))
+                else ln_eqconst_i for ln_eqconst_i in ln_eqconst
+            ]
+
+        ln_eqconst_flat = [0.0] * num_reactions
+        update_ln_eqconst_flat(0)
+
         def ln_concentrations_with_reservoirs(
             ln_concentrations: np.ndarray,
         ) -> np.ndarray:
@@ -92,7 +105,7 @@ class ChemModel:
             ln_equation = np.zeros(num_eq)
 
             for i in range(num_reactions):
-                ln_equation[i] = reactions[i].eval(ln_all_concentrations, ln_eqconst[i])
+                ln_equation[i] = reactions[i].eval(ln_all_concentrations, ln_eqconst_flat[i])
             for i in range(num_constraints - num_reservoirs):
                 constraint_id = non_reservoir_constraint_ids[i]
                 ln_equation[num_reactions + i] = constraints[constraint_id].eval(
@@ -119,9 +132,20 @@ class ChemModel:
         return np.array(results_list)
 
 
-def get_num_sweep(constraints: list[ConstraintLike]) -> int:
+def get_num_sweep(ln_eqconst: list[Union[float, list[float], np.ndarray]], constraints: list[ConstraintLike]) -> int:
     """Return the number of values in the parameter sweep. If inconsistent, raise error."""
     num_sweep = -1
+    for ln_eq in ln_eqconst:
+        if not isinstance(ln_eq, (list, np.ndarray)):
+            continue
+        if num_sweep == len(ln_eq):
+            continue
+        if num_sweep == -1:
+            num_sweep = len(ln_eq)
+            continue
+        msg = "All equilibrium constant sweeps must have equal number of values"
+        raise ValueError(msg)
+
     for cstr in constraints:
         if not isinstance(cstr, ConstraintSweep):
             continue
